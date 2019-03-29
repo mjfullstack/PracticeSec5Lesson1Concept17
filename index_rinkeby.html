@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Deploy a Remix Contract</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <h1>Ethereum Secret Messenger</h1>
+        <hr>
+
+        <label for="message">This site writes a secret message to the Ethereum
+            blockchain!</label>
+        <input id="userInput" type="text">
+
+        <button id="setMessageButton">Set secret message</button>
+		
+        <div id=printMessageHere></div>
+
+      </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+
+        // Connect a the web3 provider
+        if (typeof web3 !== 'undefined') {
+            console.log("36 web3.currentProvider: ", web3.currentProvider );
+            web3 = new Web3(web3.currentProvider);
+            web3.version.getNetwork((err, netId) => {
+            switch (netId) {
+                case "1":
+                console.log('This is mainnet')
+                break
+                case "2":
+                console.log('This is the deprecated Morden test network.')
+                break
+                case "3":
+                console.log('This is the ropsten test network.')
+                break
+                case "4":
+                console.log('This is the Rinkeby test network.')
+                break
+                case "42":
+                console.log('This is the Kovan test network.')
+                break
+                default:
+                console.log('This is an unknown network.')
+            }
+            })
+        } else {
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+            console.log('This is your LOCAL Ganache GUI network.')
+        }
+
+
+// Just get accounts list first:
+web3.eth.getAccounts();// .then( (accounts) => {console.log("\naccounts: \n", accounts, "netId: ", netId)})
+// .catch( (err) => {
+//   console.log("getAccounts error: ", err);
+// })
+
+
+
+
+        // Set a default account
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        console.log("74 web3.eth.accounts: ", web3.eth.accounts);
+
+
+
+
+/****/
+        // Get the contract abi
+        var RemixContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "x",
+				"type": "string"
+			}
+		],
+		"name": "setMessage",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getMessage",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]);
+
+/****/
+
+
+// var RemixContract = web3.eth.contract([
+
+// ]);
+
+        // Get the contract' address
+        // var myMessage = RemixContract.at('0xB069Dc836881F668F69D9246352De6DfeB7E0DDA');
+        // var myMessage = RemixContract.at('0xf00b78e13947aB212e1Edc4449B6D0f6C1524e10');
+        // var myMessage = RemixContract.at('0xe1351e205feb095a350b496e35b68c96ac6b36e4');
+        // Rinkeby Contract Address =     0x9d14fb10d280e1d9ff7933b8a34398823b072846
+        // var myMessage = RemixContract.at('0x9d14fb10d280e1d9ff7933b8a34398823b072846');
+        var myMessage = RemixContract.at('0x1056A346D72895B6DdB4157dB6e11Ccc70E0Ac85');
+        console.log(myMessage);
+
+        $("#setMessageButton").click(function () {
+          // Try another address!!!
+          // Rinkeby Test Message!!!
+          console.log($("#userInput").val())
+          $("#printMessageHere").text( $("#userInput").val() )
+          myMessage.setMessage($("#userInput").val()).then( () => {  // The way it "POSTS" to the blockchain / backend
+              console.log("136: myMessage: ", myMessage);
+          })
+          .catch( (err) => {
+  console.log("139 myMessage.setMessage  error: ", err);
+})
+
+        });
+
+    </script>
+</body>
+
+</html>
