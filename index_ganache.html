@@ -44,29 +44,16 @@
         console.log("44 web3.eth.defaultAccount: ", web3.eth.defaultAccount);
 
 		// Interact with Accounts to see if we can do ANYTHING at all on the network
-		web3.eth.getBalance(web3.eth.defaultAccount) // .then( (amount) => {
-			let amount = web3.eth.getBalance(web3.eth.defaultAccount)
-    console.log("web3.eth.defaultAccount Addr Balance: ", amount)
-    // console.log("web3.eth.defaultAccount Addr Balance (Ether) = ", web3.utils.fromWei(amount, 'ether') );
-//   })
-//   web3.eth.getBalance(web3.eth.accounts[1]).then( (amount) => {
-//     console.log("web3.eth.accounts[1] Addr Balance: ", amount)
-//     console.log("web3.eth.accounts[1] Addr Balance (Ether) = ", web3.utils.fromWei(amount, 'ether') );
-//   })
-  // Get Transaction Count for SENDER
-  // ganAcct_2gui
-  web3.eth.getTransactionCount(web3.eth.defaultAccount); //.then( (count) => {
-	  count = web3.eth.getTransactionCount(web3.eth.defaultAccount);
-    console.log("web3.eth.defaultAccount TxnCount: ", count);
-    myNonce = count;
-//   })
-//   .catch( (err) => {
-//   console.log("web3.eth.defaultAccount TxnCount error: ", err);
-//   })
-  console.log("web3.eth.defaultAccount myNonce: ", myNonce);
-
-
-
+		web3.eth.getBalance(web3.eth.defaultAccount); // .then( (amount) => {
+		let amount = web3.eth.getBalance(web3.eth.defaultAccount);
+        console.log("web3.eth.defaultAccount Addr Balance: ", amount);
+        // Get Transaction Count for SENDER
+        // ganAcct_2gui
+        web3.eth.getTransactionCount(web3.eth.defaultAccount); //.then( (count) => {
+        count = web3.eth.getTransactionCount(web3.eth.defaultAccount);
+        console.log("web3.eth.defaultAccount TxnCount: ", count);
+        myNonce = count;
+        console.log("web3.eth.defaultAccount myNonce: ", myNonce);
 
         // Get the contract address
         var RemixContract = web3.eth.contract([
@@ -101,16 +88,19 @@
 ]);
 
         // Get the contract abi
-        // var myMessage = RemixContract.at('0xb069dc836881f668f69d9246352de6dfeb7e0dda');
-        var myMessage = RemixContract.at('0xE1351E205FeB095a350b496E35b68C96ac6B36e4');
+        // var myMessage = RemixContract.at('0xE1351E205FeB095a350b496E35b68C96ac6B36e4'); // Account Address
+        var myMessage = RemixContract.at('0xe714dbe78edbd58464df8bd86e4de711ee76f150'); // Contract Address, 
 
 		console.log(myMessage);
 		
         $("#setMessageButton").click(function () {
-		  // Try another address!!!
-          console.log($("#userInput").val())
-		  $("#printMessageHere").text( $("#userInput").val() )
-		  myMessage.setMessage($("#userInput").val()); // The way it "POSTS" to the blockchain / backend
+            // Try another address!!!
+            console.log($("#userInput").val())
+            $("#printMessageHere").text( $("#userInput").val() );
+            myMessage.setMessage($("#userInput").val(), (msgRes) => { // The way it "POSTS" to the blockchain / backend
+                console.log("101: myMessage msgRes: ", msgRes);
+                console.log("102: myMessage: ", myMessage);
+            }) 
         });
 
     </script>

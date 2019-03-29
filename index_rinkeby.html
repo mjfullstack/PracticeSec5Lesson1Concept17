@@ -26,17 +26,18 @@
 		
         <div id=printMessageHere></div>
 
-      </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 
     <script>
-
+        let savedNetId;
         // Connect a the web3 provider
         if (typeof web3 !== 'undefined') {
             console.log("37 web3.currentProvider: ", web3.currentProvider );
             web3 = new Web3(web3.currentProvider);
             web3.version.getNetwork((err, netId) => {
+                savedNetId = netId;
             switch (netId) {
                 case "1":
                 console.log('This is mainnet')
@@ -62,27 +63,21 @@
             console.log('This is your LOCAL Ganache GUI network.')
         }
 
+        // Just get accounts list first:
+        web3.eth.getAccounts( (acctList) => {
+            console.log("66 RINKEBY savedNetId: ", savedNetId)
+            console.log("67 RINKEBY acctList: ", acctList)
+        });
 
-// Just get accounts list first:
-web3.eth.getAccounts( (acctList) => {
-    console.log("68 RINKEBY acctList: ", acctList)
-});// .then( (accounts) => {console.log("\naccounts: \n", accounts, "netId: ", netId)})
-// console.log("getAccounts: ", web3.eth.getAccounts() )
-// .catch( (err) => {
-//   console.log("getAccounts error: ", err);
-// })
-// My MetaMask Accounts on RINKEBY
-let myAcct1 = "0x80C1bB70e67079Fbb6aD8Af1825c68Ee9Aef7dd8";
-let myAcct2 = ""
+        // My MetaMask Accounts on RINKEBY
+        let myAcct1 = "0x80C1bB70e67079Fbb6aD8Af1825c68Ee9Aef7dd8";
+        let myAcct2 = ""
 
-// Interact with accounts to see if we can get ANYTHING yet...
-web3.eth.getBalance(myAcct1, (amount) => {
-    console.log("myAcct1 Address is: ", myAcct1)
-    console.log("myAcct1 Addr Balance: ", amount)
-}) 
-
-
-
+        // Interact with accounts to see if we can get ANYTHING yet...
+        web3.eth.getBalance(myAcct1, (amount) => {
+            console.log("myAcct1 Address is: ", myAcct1)
+            console.log("myAcct1 Addr Balance: ", amount)
+        });
 
         // Set a default account
         web3.eth.defaultAccount = web3.eth.accounts[0];
@@ -136,22 +131,20 @@ web3.eth.getBalance(myAcct1, (amount) => {
         // var myMessage = RemixContract.at('0xf00b78e13947aB212e1Edc4449B6D0f6C1524e10');
         // var myMessage = RemixContract.at('0xe1351e205feb095a350b496e35b68c96ac6b36e4');
         // Rinkeby Contract Address =     0x9d14fb10d280e1d9ff7933b8a34398823b072846
-        // var myMessage = RemixContract.at('0x9d14fb10d280e1d9ff7933b8a34398823b072846');
-        var myMessage = RemixContract.at('0x1056A346D72895B6DdB4157dB6e11Ccc70E0Ac85');
+        var myMessage = RemixContract.at('0x9d14fb10d280e1d9ff7933b8a34398823b072846'); // CONTRACT ADDRESS WORKED!!!
+        // var myMessage = RemixContract.at('0x1056A346D72895B6DdB4157dB6e11Ccc70E0Ac85');
+        // var myMessage = RemixContract.at('0x80C1bB70e67079Fbb6aD8Af1825c68Ee9Aef7dd8'); // "Non-Contract Address Error"
         console.log(myMessage);
 
         $("#setMessageButton").click(function () {
-          // Try another address!!!
-          // Rinkeby Test Message!!!
-          console.log($("#userInput").val())
-          $("#printMessageHere").text( $("#userInput").val() )
-          myMessage.setMessage($("#userInput").val()).then( () => {  // The way it "POSTS" to the blockchain / backend
-              console.log("136: myMessage: ", myMessage);
-          })
-          .catch( (err) => {
-  console.log("139 myMessage.setMessage  error: ", err);
-})
-
+            // Try another address!!!
+            // Rinkeby Test Message!!!
+            console.log($("#userInput").val())
+            $("#printMessageHere").text( $("#userInput").val() )
+            myMessage.setMessage($("#userInput").val(), (msgRes) => { // The way it "POSTS" to the blockchain / backend
+                console.log("154: myMessage msgRes: ", msgRes);
+                console.log("155: myMessage: ", myMessage);
+            }) 
         });
 
     </script>
